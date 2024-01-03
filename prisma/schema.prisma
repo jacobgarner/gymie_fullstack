@@ -1,0 +1,96 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Exercises {
+  exercise_id Int @id @default(autoincrement())
+  name String
+  type String
+  muscle String
+  equipment String
+  difficulty String
+  instructions String
+
+  workouts ExercisesInWorkouts[]
+  loggedWorkouts LoggedWorkouts[] 
+}
+
+model Users {
+  user_id Int @id @default(autoincrement())
+  username String
+  password String
+  image_url String?
+
+  workouts Workouts[]
+  loggedWorkouts LoggedWorkouts[]
+  comments Comments[]
+  posts Posts[]
+}
+
+model Workouts {
+  workout_id Int @id @default(autoincrement())
+  workout_name String
+  creator_id Int
+  creator Users @relation(fields: [creator_id], references: [user_id])
+
+  exercises ExercisesInWorkouts[]
+  loggedWorkouts LoggedWorkouts[] 
+}
+
+model ExercisesInWorkouts {
+  exercise_id Int
+  workout_id Int
+
+  exercise Exercises @relation(fields: [exercise_id], references: [exercise_id])
+  workout Workouts @relation(fields: [workout_id], references: [workout_id])
+
+  @@id([exercise_id, workout_id])
+}
+
+model LoggedWorkouts {
+    session_id Int @id @default(autoincrement())
+    exercise_id Int
+    workout_id Int
+    user_id Int
+    weight Int
+    reps Int
+    completed_at DateTime @default(now())
+
+    exercise Exercises @relation(fields: [exercise_id], references: [exercise_id])
+    workout Workouts @relation(fields: [workout_id], references: [workout_id])
+    user Users @relation(fields: [user_id], references: [user_id])
+
+    posts Posts[] 
+
+}
+
+model Posts {
+  post_id Int @id @default(autoincrement())
+  likes Int
+  session_name String
+  description String
+  session_id Int
+  user_id Int
+
+  user Users @relation(fields: [user_id], references: [user_id])
+  loggedworkout LoggedWorkouts @relation(fields: [session_id], references: [session_id])
+  comments Comments[]
+}
+
+model Comments {
+  comment_id Int @id @default(autoincrement())
+  user_id Int
+  post_id Int
+  body String
+
+  user Users @relation(fields: [user_id], references: [user_id])
+  posts Posts @relation(fields: [post_id], references: [post_id])
+}

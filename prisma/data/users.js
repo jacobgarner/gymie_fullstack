@@ -1,0 +1,20 @@
+module.exports = [{
+    "username":"jacobgarner",
+    "password":"welovetom",
+},
+{
+    "username":"tomwest",
+    "password":"welovetom",
+},
+{
+    "username":"harrydaniels",
+    "password":"welovetom",
+},
+{
+    "username":"willprice",
+    "password":"welovetom",
+},
+{
+    "username":"xingmei",
+    "password":"welovetom",
+}]
